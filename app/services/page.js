@@ -2,17 +2,41 @@ import { SERVICES, SERVICE_CATEGORIES } from '@/data/services';
 import ServiceGrid from '@/components/services/ServiceGrid';
 import SectionHeading from '@/components/common/SectionHeading';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import { constructMetadata, getBreadcrumbSchema, SITE_URL } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Our Services',
-  description: 'Explore our comprehensive range of premium beauty and grooming services at Billy Brad Unisex Salon.',
-};
+export const metadata = constructMetadata({
+  title: 'Salon Services',
+  description: 'Explore our complete range of hair styling, skin treatments, bridal makeup, nail art, and grooming services in Thuckalay and Nagercoil.',
+  canonical: '/services',
+  keywords: ['Haircuts', 'Hair Coloring', 'Facials', 'Bridal Makeup', 'Smoothening', 'Keratin Treatment', 'Thuckalay Salon', 'Nagercoil Salon'],
+});
 
 export default function ServicesPage() {
   const featuredServices = SERVICES.filter(s => s.featured).slice(0, 6);
   
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Services', url: '/services' },
+  ]);
+
+  const serviceCatalogSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Billy Brad Salon Services",
+    description: "Full list of professional hair, skin, makeup and grooming services offered.",
+    itemListElement: SERVICE_CATEGORIES.map((cat, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: `${cat.label} Services`,
+      url: `${SITE_URL}/services/${cat.id}`,
+    })),
+  };
+
   return (
     <div className="pt-24 pb-16">
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={serviceCatalogSchema} />
+
       {/* Header */}
       <div className="bg-[#1a1a1a] text-white py-20 px-4 text-center">
         <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4" style={{ fontFamily: 'var(--font-playfair)' }}>

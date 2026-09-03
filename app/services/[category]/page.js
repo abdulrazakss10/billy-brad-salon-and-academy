@@ -1,18 +1,22 @@
 import { getServicesByCategory, SERVICE_CATEGORIES } from '@/data/services';
 import ServiceGrid from '@/components/services/ServiceGrid';
+import JsonLd from '@/components/seo/JsonLd';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
+import { constructMetadata, getBreadcrumbSchema, SITE_URL } from '@/lib/seo';
 
 export async function generateMetadata({ params }) {
   const { category: catId } = await params;
   const category = SERVICE_CATEGORIES.find(c => c.id === catId);
-  if (!category) return { title: 'Category Not Found' };
+  if (!category) return constructMetadata({ title: 'Category Not Found', noIndex: true });
   
-  return {
+  return constructMetadata({
     title: `${category.label} Services`,
-    description: `Explore our premium ${category.label.toLowerCase()} services at Billy Brad Salon.`,
-  };
+    description: `Explore our premium ${category.label.toLowerCase()} services and treatments at Billy Brad Unisex Salon in Thuckalay and Nagercoil.`,
+    canonical: `/services/${catId}`,
+    keywords: [`${category.label} services`, `${category.label} salon Thuckalay`, `${category.label} Nagercoil`],
+  });
 }
 
 export function generateStaticParams() {
@@ -28,8 +32,27 @@ export default async function CategoryPage({ params }) {
 
   const services = getServicesByCategory(catId);
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Services', url: '/services' },
+    { name: `${category.label} Services`, url: `/services/${catId}` },
+  ]);
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${category.label} Services — Billy Brad Salon`,
+    itemListElement: services.map((service, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: service.name,
+      description: service.description,
+    })),
+  };
+
   return (
     <div className="pt-24 pb-20 bg-[#faf8f5] min-h-screen">
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={itemListSchema} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="mb-8">
@@ -54,3 +77,4 @@ export default async function CategoryPage({ params }) {
     </div>
   );
 }
+

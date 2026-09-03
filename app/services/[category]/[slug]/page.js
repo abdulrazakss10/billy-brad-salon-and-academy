@@ -7,16 +7,21 @@ import CTAButton from '@/components/common/CTAButton';
 import WhatsAppButton from '@/components/common/WhatsAppButton';
 import SectionHeading from '@/components/common/SectionHeading';
 import ServiceGrid from '@/components/services/ServiceGrid';
+import JsonLd from '@/components/seo/JsonLd';
+import { constructMetadata, getBreadcrumbSchema, SITE_URL } from '@/lib/seo';
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const { slug, category } = await params;
   const service = getServiceBySlug(slug);
-  if (!service) return { title: 'Service Not Found' };
+  if (!service) return constructMetadata({ title: 'Service Not Found', noIndex: true });
   
-  return {
+  return constructMetadata({
     title: service.name,
-    description: service.description,
-  };
+    description: `${service.name} at Billy Brad Unisex Salon. ${service.description}`,
+    canonical: `/services/${category}/${slug}`,
+    image: service.image,
+    keywords: [service.name, `${service.name} Thuckalay`, `${service.name} Nagercoil`, 'Beauty Treatment'],
+  });
 }
 
 export function generateStaticParams() {
@@ -27,14 +32,41 @@ export function generateStaticParams() {
 }
 
 export default async function ServiceDetailPage({ params }) {
-  const { slug } = await params;
+  const { slug, category } = await params;
   const service = getServiceBySlug(slug);
   if (!service) notFound();
 
   const relatedServices = getRelatedServices(service, 3);
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Services', url: '/services' },
+    { name: category.replace('-', ' '), url: `/services/${category}` },
+    { name: service.name, url: `/services/${category}/${slug}` },
+  ]);
+
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    description: service.description,
+    provider: {
+      "@type": "BeautySalon",
+      name: "Billy Brad Unisex Salon",
+      url: SITE_URL,
+    },
+    areaServed: ["Thuckalay", "Nagercoil", "Kanyakumari District"],
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "INR",
+      price: service.priceDisplay || "Varies",
+    },
+  };
+
   return (
     <div className="pt-24 pb-20 bg-white min-h-screen">
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={serviceSchema} />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Breadcrumb */}

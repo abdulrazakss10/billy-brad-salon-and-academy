@@ -4,16 +4,21 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, Clock, GraduationCap, CheckCircle2 } from 'lucide-react';
 import CTAButton from '@/components/common/CTAButton';
+import JsonLd from '@/components/seo/JsonLd';
+import { constructMetadata, getBreadcrumbSchema, getCourseSchema } from '@/lib/seo';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const course = getCourseBySlug(slug);
-  if (!course) return { title: 'Course Not Found' };
+  if (!course) return constructMetadata({ title: 'Course Not Found', noIndex: true });
   
-  return {
-    title: `${course.name} | Billy Brad Academy`,
+  return constructMetadata({
+    title: `${course.name} Course`,
     description: course.description,
-  };
+    canonical: `/academy/${slug}`,
+    image: course.image,
+    keywords: [course.name, `${course.name} Thuckalay`, `${course.name} Nagercoil`, 'Beauty Certification'],
+  });
 }
 
 export function generateStaticParams() {
@@ -27,8 +32,19 @@ export default async function CourseDetailPage({ params }) {
   const course = getCourseBySlug(slug);
   if (!course) notFound();
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Academy', url: '/academy' },
+    { name: 'Courses', url: '/academy/courses' },
+    { name: course.name, url: `/academy/${slug}` },
+  ]);
+
+  const courseSchema = getCourseSchema(course);
+
   return (
     <div className="pt-24 pb-20 bg-white min-h-screen">
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={courseSchema} />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Breadcrumb */}

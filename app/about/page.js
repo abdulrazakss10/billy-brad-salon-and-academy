@@ -1,18 +1,28 @@
 import Image from 'next/image';
 import SectionHeading from '@/components/common/SectionHeading';
 import ScrollReveal from '@/components/common/ScrollReveal';
+import JsonLd from '@/components/seo/JsonLd';
 import { TEAM } from '@/data/team';
 import { IMAGE_PATHS } from '@/lib/utils';
 import { BUSINESS } from '@/data/business';
+import { constructMetadata, getBreadcrumbSchema } from '@/lib/seo';
 
-export const metadata = {
-  title: 'About Us | Billy Brad',
-  description: 'Learn about the Billy Brad story, our community initiatives, and our expert team in Thuckalay and Nagercoil.',
-};
+export const metadata = constructMetadata({
+  title: 'About Us',
+  description: 'Learn about the Billy Brad story, our community initiatives, free haircuts for elders, and our expert team in Thuckalay and Nagercoil.',
+  canonical: '/about',
+  keywords: ['Billy Brad Story', 'Thuckalay Salon Team', 'Nagercoil Salon Team', 'Community Initiatives', 'Free Elder Haircuts'],
+});
 
 export default function AboutPage() {
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'About Us', url: '/about' },
+  ]);
+
   return (
     <div className="pt-24 pb-20">
+      <JsonLd data={breadcrumbSchema} />
+
       
       {/* Hero */}
       <section className="bg-[#1a1a1a] text-white py-24 px-4 text-center">

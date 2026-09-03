@@ -1,6 +1,14 @@
 import Link from 'next/link';
+import { constructMetadata } from '@/lib/seo';
+
+export const metadata = constructMetadata({
+  title: '404 Page Not Found',
+  description: 'The page you are looking for does not exist.',
+  noIndex: true,
+});
 
 export default function NotFound() {
+
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
       <div className="font-display text-[#c9a86c] text-8xl font-bold mb-6" style={{ fontFamily: 'var(--font-playfair)' }}>

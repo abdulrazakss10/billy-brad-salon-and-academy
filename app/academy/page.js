@@ -5,12 +5,16 @@ import SectionHeading from '@/components/common/SectionHeading';
 import CourseCard from '@/components/academy/CourseCard';
 import CTAButton from '@/components/common/CTAButton';
 import ScrollReveal from '@/components/common/ScrollReveal';
+import JsonLd from '@/components/seo/JsonLd';
 import { CheckCircle2, GraduationCap, Briefcase, Star } from 'lucide-react';
+import { constructMetadata, getBreadcrumbSchema, getAcademyOrganizationSchema, SITE_URL } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Billy Brad Academy | Professional Beauty Courses',
-  description: 'Complete Hair, Skin & Makeup courses with hands-on training and internship in Thuckalay & Nagercoil.',
-};
+export const metadata = constructMetadata({
+  title: 'Beauty Academy & Courses',
+  description: 'Complete Hair, Skin, Makeup & Cosmetology courses with hands-on live client training, internship and job placement support in Thuckalay & Nagercoil.',
+  canonical: '/academy',
+  keywords: ['Beautician Course', 'Makeup Course Thuckalay', 'Hair Styling Course Nagercoil', 'Beauty Academy Tamil Nadu', 'Skin Care Certification'],
+});
 
 const FEATURES = [
   { icon: GraduationCap, title: 'Expert Faculty', desc: 'Learn from industry professionals with years of salon experience.' },
@@ -22,8 +26,28 @@ const FEATURES = [
 export default function AcademyPage() {
   const featuredCourses = getFeaturedCourses();
 
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Academy', url: '/academy' },
+  ]);
+
+  const courseListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Billy Brad Academy Courses",
+    itemListElement: COURSES.map((course, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: course.name,
+      url: `${SITE_URL}/academy/${course.slug}`,
+      description: course.description,
+    })),
+  };
+
   return (
-    <div>
+    <div className="pt-24 pb-16">
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={courseListSchema} />
+
       {/* Academy Hero */}
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 bg-[#1a1a1a] text-white overflow-hidden">
         <div className="absolute inset-0 z-0">

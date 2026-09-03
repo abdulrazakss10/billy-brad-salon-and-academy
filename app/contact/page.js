@@ -3,15 +3,25 @@ import LocationCard from '@/components/common/LocationCard';
 import { BRANCHES } from '@/data/branches';
 import ScrollReveal from '@/components/common/ScrollReveal';
 import InquiryForm from '@/components/contact/InquiryForm';
+import JsonLd from '@/components/seo/JsonLd';
+import { constructMetadata, getBreadcrumbSchema } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Contact Us | Billy Brad Salon',
-  description: 'Get in touch with Billy Brad Salon & Academy. Find our branches in Thuckalay and Nagercoil.',
-};
+export const metadata = constructMetadata({
+  title: 'Contact Us',
+  description: 'Get in touch with Billy Brad Salon & Academy. Find directions, phone numbers, and WhatsApp links for our Thuckalay and Nagercoil branches.',
+  canonical: '/contact',
+  keywords: ['Contact Billy Brad', 'Thuckalay Salon Location', 'Nagercoil Salon Address', 'Billy Brad Phone Number'],
+});
 
 export default function ContactPage() {
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Contact Us', url: '/contact' },
+  ]);
+
   return (
     <div className="pt-24 pb-20 bg-[#faf8f5] min-h-screen">
+      <JsonLd data={breadcrumbSchema} />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeading 

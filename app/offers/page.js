@@ -2,17 +2,40 @@ import Image from 'next/image';
 import SectionHeading from '@/components/common/SectionHeading';
 import ScrollReveal from '@/components/common/ScrollReveal';
 import CTAButton from '@/components/common/CTAButton';
+import JsonLd from '@/components/seo/JsonLd';
 import { OFFERS, MEMBERSHIP_PLANS } from '@/data/offers';
 import { CheckCircle2 } from 'lucide-react';
+import { constructMetadata, getBreadcrumbSchema, SITE_URL } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Offers & Packages | Billy Brad Salon',
-  description: 'Explore the latest offers, seasonal packages, and membership plans at Billy Brad Salon.',
-};
+export const metadata = constructMetadata({
+  title: 'Offers & Packages',
+  description: 'Explore exclusive salon offers, seasonal discount packages, and VIP membership plans at Billy Brad Salon in Thuckalay and Nagercoil.',
+  canonical: '/offers',
+  keywords: ['Salon Offers Thuckalay', 'Salon Packages Nagercoil', 'Haircut Offers', 'Bridal Packages', 'Billy Brad Memberships'],
+});
 
 export default function OffersPage() {
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: 'Offers', url: '/offers' },
+  ]);
+
+  const offersSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Billy Brad Special Offers & Packages",
+    itemListElement: OFFERS.map((offer, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: offer.title,
+      description: offer.description,
+    })),
+  };
+
   return (
     <div className="pt-24 pb-20 bg-[#faf8f5] min-h-screen">
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={offersSchema} />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeading 

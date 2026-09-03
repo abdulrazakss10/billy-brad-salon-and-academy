@@ -5,7 +5,9 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import RouteProgressBar from "@/components/common/RouteProgressBar";
+import JsonLd from "@/components/seo/JsonLd";
 import { BUSINESS } from "@/data/business";
+import { SITE_URL, getLocalBusinessSchema, getAcademyOrganizationSchema } from "@/lib/seo";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,6 +32,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${BUSINESS.name} | ${BUSINESS.tagline}`,
     template: `%s | ${BUSINESS.shortName}`,
@@ -38,37 +41,59 @@ export const metadata = {
   keywords: [
     "Billy Brad",
     "Unisex Salon",
-    "Beauty Salon",
-    "Thuckalay",
-    "Nagercoil",
-    "Hair Salon",
-    "Makeup",
+    "Beauty Salon Thuckalay",
+    "Hair Salon Nagercoil",
     "Bridal Makeup",
     "Beauty Academy",
     "Hair Course",
     "Skin Care",
-    "Tamil Nadu",
+    "Tamil Nadu Salon",
   ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     title: `${BUSINESS.name} | ${BUSINESS.tagline}`,
     description: `${BUSINESS.salonPositioning} Premium beauty & grooming in Thuckalay & Nagercoil.`,
+    url: SITE_URL,
+    siteName: BUSINESS.name,
+    locale: "en_US",
     type: "website",
-    images: [{ url: "/images/MICS.png", width: 1200, height: 630 }],
+    images: [{ url: "/images/MICS.png", width: 1200, height: 630, alt: BUSINESS.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: BUSINESS.name,
     description: BUSINESS.tagline,
+    images: ["/images/MICS.png"],
   },
 };
 
 export default function RootLayout({ children }) {
+  const localBusinessSchema = getLocalBusinessSchema();
+  const academySchema = getAcademyOrganizationSchema();
+
   return (
     <html
       lang="en"
       suppressHydrationWarning
       className={`${inter.variable} ${playfair.variable} ${cormorant.variable}`}
     >
+      <head>
+        <JsonLd data={localBusinessSchema} />
+        <JsonLd data={academySchema} />
+      </head>
       <body className="min-h-screen flex flex-col bg-[#faf8f5] text-[#1a1a1a] antialiased">
         <RouteProgressBar />
         <Header />
@@ -78,3 +103,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
