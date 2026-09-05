@@ -68,7 +68,7 @@ export const metadata = {
     description: `${BUSINESS.salonPositioning} Premium beauty & grooming in Thuckalay & Nagercoil.`,
     url: SITE_URL,
     siteName: BUSINESS.name,
-    locale: "en_US",
+    locale: "en_IN",
     type: "website",
     images: [{ url: "/images/MICS.png", width: 1200, height: 630, alt: BUSINESS.name }],
   },
